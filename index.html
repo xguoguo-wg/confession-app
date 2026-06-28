@@ -167,16 +167,25 @@ function moveNoImpl(){
     const cardRect=card.getBoundingClientRect();
     const bw=btnNo.offsetWidth||160;
     const bh=btnNo.offsetHeight||44;
-    const m=20; // margin from card edges
+    const m=50; // larger margin to keep button away from edges
 
-    const availW=cardRect.width-bw-m*2;
-    const availH=cardRect.height-bh-m*2;
+    // Clamp to viewport bounds as safety net
+    const vw=window.innerWidth;
+    const vh=window.innerHeight;
+
+    const minX=Math.max(cardRect.left+m, 10);
+    const maxX=Math.min(cardRect.right-bw-m, vw-bw-10);
+    const minY=Math.max(cardRect.top+m, 10);
+    const maxY=Math.min(cardRect.bottom-bh-m, vh-bh-10);
+
+    const availW=maxX-minX;
+    const availH=maxY-minY;
 
     if(availW<=0||availH<=0) return;
 
-    // Generate random position relative to card's top-left + margin
-    noX=cardRect.left+m+Math.random()*availW;
-    noY=cardRect.top+m+Math.random()*availH;
+    // Generate random position within safe bounds
+    noX=minX+Math.random()*availW;
+    noY=minY+Math.random()*availH;
 
     btnNo.style.left=noX+'px';
     btnNo.style.top=noY+'px';
